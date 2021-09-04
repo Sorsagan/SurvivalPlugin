@@ -72,8 +72,6 @@ class Main extends PluginBase implements Listener
 
                     if ($item->getDamage() > 0) {
 
-                      
-
                         $item->setDamage(0);
 
                         $sender->getInventory()->setItemInHand($item);
@@ -83,6 +81,7 @@ class Main extends PluginBase implements Listener
                             TextFormat::BLUE . "Item succesfully repaired!"
 
                         );
+
                         $this->showTotemEffect($sender);
 
                     } else {
