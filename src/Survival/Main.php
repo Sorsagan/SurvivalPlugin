@@ -14,6 +14,8 @@ use pocketmine\command\Command;
 
 use pocketmine\command\CommandSender;
 
+use pocketmine\utils\TextFormat;
+
 use pocketmine\event\Listener;
 
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
@@ -66,11 +68,11 @@ class Main extends PluginBase implements Listener
 
                 if ($sender instanceof Player) {
 
-                   $this->showTotemEffect($sender);
-
                     $item = $sender->getInventory()->getItemInHand();
 
                     if ($item->getDamage() > 0) {
+
+                      
 
                         $item->setDamage(0);
 
@@ -81,6 +83,7 @@ class Main extends PluginBase implements Listener
                             TextFormat::BLUE . "Item succesfully repaired!"
 
                         );
+                        $this->showTotemEffect($sender);
 
                     } else {
 
@@ -97,6 +100,8 @@ class Main extends PluginBase implements Listener
                     $sender->sendMessage("you arent hooman");
 
                 }
+
+                break;
 
         }
 
