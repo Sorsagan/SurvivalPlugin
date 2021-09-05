@@ -38,7 +38,7 @@ class Main extends PluginBase implements Listener
 
     {
 
-        $this->getLogger()->info("onEnable() has been called!");
+        $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
 
     }
 
@@ -46,7 +46,7 @@ class Main extends PluginBase implements Listener
 
     {
 
-        $this->getLogger()->info("onDisable() has been called!");
+        $this->getLogger()->info(TextFormat::RED . "SurvivalPlugin disabled!");
 
     }
 
@@ -102,6 +102,46 @@ class Main extends PluginBase implements Listener
 
                 break;
 
+            case "heal":
+
+                if ($sender instanceof Player) {
+
+                    $player->setHealth(20);
+
+                    $sender->sendMessage(
+
+                        TextFormat::GREEN . "Your hearts restored!"
+
+                    );
+
+                } else {
+
+                    $sender->sendMessage("you arent hooman");
+
+                }
+
+                break;
+
+            case "food":
+
+                if ($sender instanceof Player) {
+
+                    $player->setFood($player->getMaxFood());
+
+                    $sender->sendMessage(
+
+                        TextFormat::BLUE . "Your hunger bars restored!"
+
+                    );
+
+                } else {
+
+                    $sender->sendMessage("you arent hooman");
+
+                }
+
+                break;
+
         }
 
         return true;
@@ -131,4 +171,3 @@ class Main extends PluginBase implements Listener
     }
 
 }
-
