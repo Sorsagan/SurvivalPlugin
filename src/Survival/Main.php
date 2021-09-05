@@ -106,7 +106,7 @@ class Main extends PluginBase implements Listener
 
                 if ($sender instanceof Player) {
 
-                    $player->setHealth(20);
+                    $sender->setHealth(20);
 
                     $sender->sendMessage(
 
@@ -126,7 +126,7 @@ class Main extends PluginBase implements Listener
 
                 if ($sender instanceof Player) {
 
-                    $player->setFood($player->getMaxFood());
+                    $sender->setFood($sender->getMaxFood());
 
                     $sender->sendMessage(
 
