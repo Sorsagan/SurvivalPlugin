@@ -14,8 +14,8 @@ use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\Listener;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
-use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 class Main extends PluginBase implements Listener
 {
     public function onLoad()
@@ -61,11 +61,12 @@ class Main extends PluginBase implements Listener
 
             case "heal":
                 if ($sender instanceof Player) {
+                  $effectId = 10;
                     $sender->setHealth(20);
                     $sender->sendMessage(
-                        TextFormat::GREEN . "Your hearts restored!"
-                    );
-                    $this->showOnScreenAnimation($sender, 10);
+                        TextFormat::GREEN . "Your hearts restored!");
+                        $this->showOnScreenAnimation($sender, $effectId);
+                    
                 } else {
                     $sender->sendMessage("you arent hooman");
                 }
@@ -95,10 +96,9 @@ class Main extends PluginBase implements Listener
         $player->dataPacket($pk);
         $player->getInventory()->getItemInHand(Item::get(0, 0, 1));
     }
-    public function showOnScreenAnimation(Player $player)
-    {
-        $packet = new OnScreenTextureAnimationPacket();
-        $packet->effectId = 10;
-        $player->sendDataPacket($packet);
+    public function showOnScreenAnimation(Player $player) {
+      $packet = new OnScreenTextureAnimationPacket();
+      $packet->effectId = $effectId;
+      $player->sendDataPacket($packet);
     }
 }
