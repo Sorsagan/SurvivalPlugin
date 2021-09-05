@@ -73,10 +73,12 @@ class Main extends PluginBase implements Listener
                 break;
             case "food":
                 if ($sender instanceof Player) {
+                  $effectId = 17;
                     $sender->setFood($sender->getMaxFood());
                     $sender->sendMessage(
                         TextFormat::BLUE . "Your hunger bars restored!"
                     );
+                    $this->showOnScreenAnimation($sender, $effectId);
                 } else {
                     $sender->sendMessage("you arent hooman");
                 }
@@ -96,7 +98,7 @@ class Main extends PluginBase implements Listener
         $player->dataPacket($pk);
         $player->getInventory()->getItemInHand(Item::get(0, 0, 1));
     }
-    public function showOnScreenAnimation(Player $player) {
+    public function showOnScreenAnimation(Player $player, int $effectId) {
       $packet = new OnScreenTextureAnimationPacket();
       $packet->effectId = $effectId;
       $player->sendDataPacket($packet);
