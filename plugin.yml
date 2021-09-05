@@ -17,3 +17,23 @@ commands:
   description: "Repair your items!"
 
   aliases: [rep, fix]
+
+  usage: "/repair"
+
+ fly:
+
+  description: "Fly like a bird!"
+
+  usage: "/fly"
+
+ heal:
+
+  description: "Want some heart??"
+
+  usage: "/heal"
+
+ food:
+
+  description: "Get some food:/"
+
+  usage: "/food"
