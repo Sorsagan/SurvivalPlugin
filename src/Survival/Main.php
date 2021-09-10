@@ -19,7 +19,8 @@ use pocketmine\event\Listener;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
-use jojoe77777\FormAPI;
+use Survival\libs\jojoe77777\FormAPI\SimpleForm;
+use Survival\libs\jojoe77777\FormAPI\CustomForm;
 class Main extends PluginBase implements Listener
 {
     public function onLoad()
