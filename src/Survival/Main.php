@@ -133,13 +133,35 @@ class Main extends PluginBase implements Listener
             }
             switch ($result) {
                 case 0:
-                    $player->sendMessage("hi");
+                  if ($player instanceof Player) {
+                    $effectId = 10;
+                    $player->setHealth(20);
+                     $this->showOnScreenAnimation($player, $effectId);
+                     $player->sendPopup(
+                        TextFormat::GREEN . "Your hearts restored!"
+                    ); 
+                  } else {
+                    $player->sendMessage("u bot");
+                  }
                     break;
+                    
+                    case 1:
+                      if ($player instanceof Player) {
+                    $effectId = 17;
+                     $player->setFood($player->getMaxFood());
+                     $this->showOnScreenAnimation($player, $effectId);
+                     $player->sendPopup(
+                        TextFormat::BLUE . "Your hunger bars restored!"
+                    );
+                      } else {
+                        $player->sendMessage("u bot");
+                      }
+                      break;
             }
         });
-        $form->setTitle("hi");
-        $form->setContent("bye");
-        $form->addButton("lol");
+        $form->setTitle("Shortcut Menu");
+        $form->addButton("§4Heal");
+        $form->addButton("§6Food");
         $form->sendToPlayer($player);
         return $form;
     }
