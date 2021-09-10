@@ -31,7 +31,7 @@ class Main extends PluginBase implements Listener
     public function onEnable()
     {
         $this->getServer()
-            ->getPluginManage()
+            ->getPluginManager()
             ->registeredEvents($this, $this);
         $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
     }
@@ -122,7 +122,7 @@ class Main extends PluginBase implements Listener
     }
     public function openMyForm($sender)
     {
-        $api = $this->getServer()->getPluginManager->getPlugin("FormAPI");
+        $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
         $form = $api->createSimpleForm(function (
             Player $sender,
             int $data = null
