@@ -32,7 +32,7 @@ class Main extends PluginBase implements Listener
     {
         $this->getServer()
             ->getPluginManager()
-            ->registeredEvents($this, $this);
+            ->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
     }
 
