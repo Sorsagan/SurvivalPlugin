@@ -1,39 +1,20 @@
 name: SurvivalPlugin
-
 main: Survival\Main
-
 version: 1.0.0
-
 api: 3.0.0
-
 author: Ali881MC
 
-
-
 commands:
-
  repair:
-
   description: "Repair your items!"
-
   aliases: [rep, fix]
-
   usage: "/repair"
-
- fly:
-
-  description: "Fly like a bird!"
-
-  usage: "/fly"
-
  heal:
-
   description: "Want some heart??"
-
   usage: "/heal"
-
  food:
-
   description: "Get some food:/"
-
   usage: "/food"
+ form:
+  description: "test"
+  usage: "/form"
