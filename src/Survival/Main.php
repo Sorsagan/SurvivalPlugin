@@ -3,6 +3,7 @@
 namespace Survival;
 
 use pocketmine\item\Item;
+use pocketmine\level\DustParticle;
 use pocketmine\Server;
 use pocketmine\Player;
 
@@ -11,11 +12,14 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 
+use pocketmine\math\Vector3;
+use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\Listener;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
+use jojoe77777\FormAPI;
 class Main extends PluginBase implements Listener
 {
     public function onLoad()
@@ -25,6 +29,9 @@ class Main extends PluginBase implements Listener
 
     public function onEnable()
     {
+        $this->getServer()
+            ->getPluginManage()
+            ->registeredEvents($this, $this);
         $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
     }
 
@@ -61,24 +68,32 @@ class Main extends PluginBase implements Listener
 
             case "heal":
                 if ($sender instanceof Player) {
-                  $effectId = 10;
+                    $effectId = 10;
                     $sender->setHealth(20);
                     $sender->sendMessage(
-                        TextFormat::GREEN . "Your hearts restored!");
-                        $this->showOnScreenAnimation($sender, $effectId);
-                    
+                        TextFormat::GREEN . "Your hearts restored!"
+                    );
+                    $this->showOnScreenAnimation($sender, $effectId);
                 } else {
                     $sender->sendMessage("you arent hooman");
                 }
                 break;
             case "food":
                 if ($sender instanceof Player) {
-                  $effectId = 17;
+                    $effectId = 17;
                     $sender->setFood($sender->getMaxFood());
                     $sender->sendMessage(
                         TextFormat::BLUE . "Your hunger bars restored!"
                     );
                     $this->showOnScreenAnimation($sender, $effectId);
+                } else {
+                    $sender->sendMessage("you arent hooman");
+                }
+                break;
+
+            case "form":
+                if ($sender instanceof Player) {
+                    $this->openMyForm($sender);
                 } else {
                     $sender->sendMessage("you arent hooman");
                 }
@@ -98,9 +113,33 @@ class Main extends PluginBase implements Listener
         $player->dataPacket($pk);
         $player->getInventory()->getItemInHand(Item::get(0, 0, 1));
     }
-    public function showOnScreenAnimation(Player $player, int $effectId) {
-      $packet = new OnScreenTextureAnimationPacket();
-      $packet->effectId = $effectId;
-      $player->sendDataPacket($packet);
+    public function showOnScreenAnimation(Player $player, int $effectId)
+    {
+        $packet = new OnScreenTextureAnimationPacket();
+        $packet->effectId = $effectId;
+        $player->sendDataPacket($packet);
+    }
+    public function openMyForm($sender)
+    {
+        $api = $this->getServer()->getPluginManager->getPlugin("FormAPI");
+        $form = $api->createSimpleForm(function (
+            Player $sender,
+            int $data = null
+        ) {
+            $result = $data;
+            if ($result === null) {
+                return true;
+            }
+            switch ($result) {
+                case 0:
+                    $sender->sendMessage("hi");
+                    break;
+            }
+        });
+        $form->setTitle("hi");
+        $form->setContent("bye");
+        $form->addButton("lol");
+        $form->sendToPlayer($sender);
+        return $form;
     }
 }
