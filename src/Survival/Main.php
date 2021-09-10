@@ -16,11 +16,11 @@ use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\Listener;
+use pocketmine\form\Form;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
-use Survival\libs\jojoe77777\FormAPI\SimpleForm;
-use Survival\libs\jojoe77777\FormAPI\CustomForm;
+use jojoe77777\FormAPI;
 class Main extends PluginBase implements Listener
 {
     public function onLoad()
@@ -58,7 +58,7 @@ class Main extends PluginBase implements Listener
                         );
                         $this->showTotemEffect($sender);
                     } else {
-                        $sender->sendMessage(
+                        $sender->sendPopup(
                             TextFormat::RED . "Item does not have any damage!"
                         );
                     }
@@ -71,7 +71,7 @@ class Main extends PluginBase implements Listener
                 if ($sender instanceof Player) {
                     $effectId = 10;
                     $sender->setHealth(20);
-                    $sender->sendMessage(
+                    $sender->sendPopup(
                         TextFormat::GREEN . "Your hearts restored!"
                     );
                     $this->showOnScreenAnimation($sender, $effectId);
@@ -83,7 +83,7 @@ class Main extends PluginBase implements Listener
                 if ($sender instanceof Player) {
                     $effectId = 17;
                     $sender->setFood($sender->getMaxFood());
-                    $sender->sendMessage(
+                    $sender->sendPopup(
                         TextFormat::BLUE . "Your hunger bars restored!"
                     );
                     $this->showOnScreenAnimation($sender, $effectId);
@@ -120,7 +120,7 @@ class Main extends PluginBase implements Listener
         $packet->effectId = $effectId;
         $player->sendDataPacket($packet);
     }
-    public function openMyForm($player)
+    public function openMyForm(Player $player)
     {
         $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
         $form = $api->createSimpleForm(function (
@@ -140,7 +140,7 @@ class Main extends PluginBase implements Listener
         $form->setTitle("hi");
         $form->setContent("bye");
         $form->addButton("lol");
-        $form->sendToPlayer($sender);
+        $form->sendToPlayer($player);
         return $form;
     }
 }
