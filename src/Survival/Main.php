@@ -30,7 +30,7 @@ class Main extends PluginBase implements Listener
 
     public function onEnable()
     {
-        $this->getServer()
+          $this->getServer()
             ->getPluginManager()
             ->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
@@ -53,7 +53,7 @@ class Main extends PluginBase implements Listener
                     if ($item->getDamage() > 0) {
                         $item->setDamage(0);
                         $sender->getInventory()->setItemInHand($item);
-                        $sender->sendMessage(
+                        $sender->sendPopup(
                             TextFormat::BLUE . "Item succesfully repaired!"
                         );
                         $this->showTotemEffect($sender);
@@ -120,11 +120,11 @@ class Main extends PluginBase implements Listener
         $packet->effectId = $effectId;
         $player->sendDataPacket($packet);
     }
-    public function openMyForm($sender)
+    public function openMyForm($player)
     {
         $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
         $form = $api->createSimpleForm(function (
-            Player $sender,
+            Player $player,
             int $data = null
         ) {
             $result = $data;
@@ -133,7 +133,7 @@ class Main extends PluginBase implements Listener
             }
             switch ($result) {
                 case 0:
-                    $sender->sendMessage("hi");
+                    $player->sendMessage("hi");
                     break;
             }
         });
