@@ -100,35 +100,14 @@ class Main extends PluginBase implements Listener
                     $sender->sendForm(new MenuForm(
   "Shortcut Menu",
   "",
-  [new MenuOption("§4Heal")],
-  function(Player $sender): void {
-    $effectId = 10;
-                    $sender->setHealth(20);
-                    $sender->sendPopup(
-                        TextFormat::GREEN . "Your hearts restored!"
-                    );
-                    $this->showOnScreenAnimation($sender, $effectId);
-                    $sender->getLevel()->addSound(new FizzSound(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
-                    
-                    $sender->getLevel()->addParticle(new HeartParticle(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
-  },
-  [new MenuOption("§1Repair")],
-  function(Player $sender): void {
-    $item = $sender->getInventory()->getItemInHand();
-                    if ($item->getDamage() > 0) {
-                        $item->setDamage(0);
-                        $sender->getInventory()->setItemInHand($item);
-                        $sender->sendPopup(
-                            TextFormat::BLUE . "Item succesfully repaired!"
-                        );
-                        $this->showTotemEffect($sender);
-                        $sender->getLevel()->addSound(new AnvilUseSound(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
-                    } else {
-                        $sender->sendPopup(
-                            TextFormat::RED . "Item does not have any damage!"
-                        );
-                    }
-  }
+ [
+				new MenuOption("Option 1"),
+
+				new MenuOption("Option 2", new FormIcon("textures/blocks/acacia_trapdoor.png", FormIcon::IMAGE_TYPE_PATH))
+			],
+			function(Player $sender, int $selected) : void {
+				  $sender->sendMessage("hi");
+			}
 ));
                 break;
         }
