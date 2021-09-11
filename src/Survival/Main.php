@@ -97,18 +97,14 @@ class Main extends PluginBase implements Listener
                 break;
 
             case "form":
-                    $sender->sendForm(new MenuForm(
-  "Shortcut Menu",
-  "",
- [
-				new MenuOption("Option 1"),
-
-				new MenuOption("Option 2", new FormIcon("textures/blocks/acacia_trapdoor.png", FormIcon::IMAGE_TYPE_PATH))
-			],
-			function(Player $sender, int $selected) : void {
+              $sender->sendForm(new MenuForm(
+  "Menu",
+  "Content",
+  [new MenuOption("Option 1")],
+  function(Player $sender) : void {
 				  $sender->sendMessage("hi");
 			}
-));
+			));
                 break;
         }
 
