@@ -20,7 +20,11 @@ use pocketmine\form\Form;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
-use jojoe77777\FormAPI;
+use pocketmine\level\sound\FizzSound;
+use pocketmine\level\sound\AnvilUseSound;
+use pocketmine\level\particle\HeartParticle;
+use dktapps\pmforms\{CustomForm,CustomFormResponse,FormIcon,MenuForm,MenuOption,ModalForm};
+use dktapps\pmforms\element\{Dropdown,Input,Label,Slider,StepSlider,Toggle};
 class Main extends PluginBase implements Listener
 {
     public function onLoad()
@@ -30,7 +34,7 @@ class Main extends PluginBase implements Listener
 
     public function onEnable()
     {
-          $this->getServer()
+        $this->getServer()
             ->getPluginManager()
             ->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::GREEN . "SurvivalPlugin enabled!");
@@ -93,11 +97,39 @@ class Main extends PluginBase implements Listener
                 break;
 
             case "form":
-                if ($sender instanceof Player) {
-                    $this->openMyForm($sender);
-                } else {
-                    $sender->sendMessage("you arent hooman");
-                }
+                    $sender->sendForm(new MenuForm(
+  "Shortcut Menu",
+  "",
+  [new MenuOption("§4Heal")],
+  function(Player $sender): void {
+    $effectId = 10;
+                    $sender->setHealth(20);
+                    $sender->sendPopup(
+                        TextFormat::GREEN . "Your hearts restored!"
+                    );
+                    $this->showOnScreenAnimation($sender, $effectId);
+                    $sender->getLevel()->addSound(new FizzSound(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
+                    
+                    $sender->getLevel()->addParticle(new HeartParticle(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
+  },
+  [new MenuOption("§1Repair")],
+  function(Player $sender): void {
+    $item = $sender->getInventory()->getItemInHand();
+                    if ($item->getDamage() > 0) {
+                        $item->setDamage(0);
+                        $sender->getInventory()->setItemInHand($item);
+                        $sender->sendPopup(
+                            TextFormat::BLUE . "Item succesfully repaired!"
+                        );
+                        $this->showTotemEffect($sender);
+                        $sender->getLevel()->addSound(new AnvilUseSound(new Vector3($sender->getX(), $sender->getY(), $sender->getZ())));
+                    } else {
+                        $sender->sendPopup(
+                            TextFormat::RED . "Item does not have any damage!"
+                        );
+                    }
+  }
+));
                 break;
         }
 
@@ -120,49 +152,5 @@ class Main extends PluginBase implements Listener
         $packet->effectId = $effectId;
         $player->sendDataPacket($packet);
     }
-    public function openMyForm(Player $player)
-    {
-        $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
-        $form = $api->createSimpleForm(function (
-            Player $player,
-            int $data = null
-        ) {
-            $result = $data;
-            if ($result === null) {
-                return true;
-            }
-            switch ($result) {
-                case 0:
-                  if ($player instanceof Player) {
-                    $effectId = 10;
-                    $player->setHealth(20);
-                     $this->showOnScreenAnimation($player, $effectId);
-                     $player->sendPopup(
-                        TextFormat::GREEN . "Your hearts restored!"
-                    ); 
-                  } else {
-                    $player->sendMessage("u bot");
-                  }
-                    break;
-                    
-                    case 1:
-                      if ($player instanceof Player) {
-                    $effectId = 17;
-                     $player->setFood($player->getMaxFood());
-                     $this->showOnScreenAnimation($player, $effectId);
-                     $player->sendPopup(
-                        TextFormat::BLUE . "Your hunger bars restored!"
-                    );
-                      } else {
-                        $player->sendMessage("u bot");
-                      }
-                      break;
-            }
-        });
-        $form->setTitle("Shortcut Menu");
-        $form->addButton("§4Heal");
-        $form->addButton("§6Food");
-        $form->sendToPlayer($player);
-        return $form;
     }
-}
+
