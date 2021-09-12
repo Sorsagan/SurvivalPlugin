@@ -23,10 +23,36 @@ use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\level\sound\FizzSound;
 use pocketmine\level\sound\AnvilUseSound;
 use pocketmine\level\particle\HeartParticle;
-use dktapps\pmforms\{CustomForm,CustomFormResponse,FormIcon,MenuForm,MenuOption,ModalForm};
-use dktapps\pmforms\element\{Dropdown,Input,Label,Slider,StepSlider,Toggle};
+use pocketmine\level\particle\HugeExplodeParticle;
+use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerQuitEvent;
+use dktapps\pmforms\{
+    CustomForm,
+    CustomFormResponse,
+    FormIcon,
+    MenuForm,
+    MenuOption,
+    ModalForm
+};
+use dktapps\pmforms\element\{
+    Dropdown,
+    Input,
+    Label,
+    Slider,
+    StepSlider,
+    Toggle
+};
 class Main extends PluginBase implements Listener
 {
+    public function onJoin(PlayerJoinEvent $event)
+    {
+        $event->setJoinMessage("");
+    }
+
+    public function onQuit(PlayerQuitEvent $event)
+    {
+        $event->setQuitMessage("");
+    }
     public function onLoad()
     {
         $this->getLogger()->info("onLoad() has been called!");
@@ -51,60 +77,119 @@ class Main extends PluginBase implements Listener
         array $args
     ): bool {
         switch ($cmd->getName()) {
-            case "repair":
-                if ($sender instanceof Player) {
-                    $item = $sender->getInventory()->getItemInHand();
-                    if ($item->getDamage() > 0) {
-                        $item->setDamage(0);
-                        $sender->getInventory()->setItemInHand($item);
-                        $sender->sendPopup(
-                            TextFormat::BLUE . "Item succesfully repaired!"
-                        );
-                        $this->showTotemEffect($sender);
-                    } else {
-                        $sender->sendPopup(
-                            TextFormat::RED . "Item does not have any damage!"
-                        );
-                    }
-                } else {
-                    $sender->sendMessage("you arent hooman");
-                }
-                break;
-
-            case "heal":
-                if ($sender instanceof Player) {
-                    $effectId = 10;
-                    $sender->setHealth(20);
-                    $sender->sendPopup(
-                        TextFormat::GREEN . "Your hearts restored!"
-                    );
-                    $this->showOnScreenAnimation($sender, $effectId);
-                } else {
-                    $sender->sendMessage("you arent hooman");
-                }
-                break;
-            case "food":
-                if ($sender instanceof Player) {
-                    $effectId = 17;
-                    $sender->setFood($sender->getMaxFood());
-                    $sender->sendPopup(
-                        TextFormat::BLUE . "Your hunger bars restored!"
-                    );
-                    $this->showOnScreenAnimation($sender, $effectId);
-                } else {
-                    $sender->sendMessage("you arent hooman");
-                }
-                break;
-
-            case "form":
-              $sender->sendForm(new MenuForm(
-  "Menu",
-  "Content",
-  [new MenuOption("Option 1")],
-  function(Player $sender) : void {
-				  $sender->sendMessage("hi");
-			}
-			));
+            case "menu":
+                $sender->sendForm(
+                    new MenuForm(
+                        "Shortcut Menu",
+                        "",
+                        [
+                            new MenuOption("§4Heal"),
+                            new MenuOption("§6Food"),
+                            new MenuOption("Repair"),
+                        ],
+                        function (Player $sender, int $sel): void {
+                            if ($sel == 0) {
+                                $effectId = 10;
+                                $sender->setHealth($sender->getMaxHealth());
+                                $sender->sendPopup(
+                                    TextFormat::GREEN . "Your hearts restored!"
+                                );
+                                $this->showOnScreenAnimation(
+                                    $sender,
+                                    $effectId
+                                );
+                                $sender
+                                    ->getLevel()
+                                    ->addSound(
+                                        new FizzSound(
+                                            new Vector3(
+                                                $sender->getX(),
+                                                $sender->getY(),
+                                                $sender->getZ()
+                                            )
+                                        )
+                                    );
+                                $sender
+                                    ->getLevel()
+                                    ->addParticle(
+                                        new HeartParticle(
+                                            new Vector3(
+                                                $sender->getX(),
+                                                $sender->getY(),
+                                                $sender->getZ()
+                                            )
+                                        )
+                                    );
+                            }
+                            if ($sel == 1) {
+                                $effectId = 17;
+                                $sender->setFood($sender->getMaxFood());
+                                $sender->sendPopup(
+                                    TextFormat::BLUE .
+                                        "Your hunger bars restored!"
+                                );
+                                $this->showOnScreenAnimation(
+                                    $sender,
+                                    $effectId
+                                );
+                                $sender
+                                    ->getLevel()
+                                    ->addSound(
+                                        new FizzSound(
+                                            new Vector3(
+                                                $sender->getX(),
+                                                $sender->getY(),
+                                                $sender->getZ()
+                                            )
+                                        )
+                                    );
+                                $sender
+                                    ->getLevel()
+                                    ->addParticle(
+                                        new HugeExplodeParticle(
+                                            new Vector3(
+                                                $sender->getX(),
+                                                $sender->getY(),
+                                                $sender->getZ()
+                                            )
+                                        )
+                                    );
+                            }
+                            if ($sel == 2) {
+                                $item = $sender
+                                    ->getInventory()
+                                    ->getItemInHand();
+                                if ($item->getDamage() > 0) {
+                                    $item->setDamage(0);
+                                    $sender
+                                        ->getInventory()
+                                        ->setItemInHand($item);
+                                    $sender->sendPopup(
+                                        TextFormat::BLUE .
+                                            "Item succesfully repaired!"
+                                    );
+                                    $this->showTotemEffect($sender);
+                                    $sender
+                                        ->getLevel()
+                                        ->addSound(
+                                            new AnvilUseSound(
+                                                new Vector3(
+                                                    $sender->getX(),
+                                                    $sender->getY(),
+                                                    $sender->getZ()
+                                                )
+                                            )
+                                        );
+                                } else {
+                                    $sender->sendPopup(
+                                        TextFormat::RED .
+                                            "Item does not have any damage!"
+                                    );
+                                }
+                            }
+                        }
+                    )
+                );
                 break;
         }
 
@@ -127,5 +212,4 @@ class Main extends PluginBase implements Listener
         $packet->effectId = $effectId;
         $player->sendDataPacket($packet);
     }
-    }
-
+}
