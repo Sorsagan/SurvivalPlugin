@@ -6,6 +6,8 @@ use pocketmine\item\Item;
 use pocketmine\level\DustParticle;
 use pocketmine\Server;
 use pocketmine\Player;
+use pocketmine\inventory\Inventory;
+use pocketmine\block\Block;
 
 use pocketmine\plugin\PluginBase;
 
@@ -26,6 +28,7 @@ use pocketmine\level\particle\HeartParticle;
 use pocketmine\level\particle\HugeExplodeParticle;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\block\BlockBreakEvent;
 use dktapps\pmforms\{
     CustomForm,
     CustomFormResponse,
@@ -70,6 +73,17 @@ class Main extends PluginBase implements Listener
     {
         $this->getLogger()->info(TextFormat::RED . "SurvivalPlugin disabled!");
     }
+    public function onBreakk(BlockBreakEvent $var){$blockid = 15;$itemdrops = 265;$blockid2 = 14;$itemdrops2 = 266;
+if($var->getBlock()->getID() == $blockid){
+$var->setDrops(array(Item::get($itemdrops)));
+}
+if($var->getBlock()->getID() == $blockid2){
+$var->setDrops(array(Item::get($itemdrops2)));
+}
+$this->getServer()
+            ->getPluginManager()
+            ->registerEvents($this, $this);
+}
     public function onCommand(
         CommandSender $sender,
         Command $cmd,
