@@ -3,6 +3,8 @@ main: Survival\Main
 version: 1.0.0
 api: 3.0.0
 author: Ali881MC
+mcpe-protocol:
+- 471
 
 commands:
  repair:
